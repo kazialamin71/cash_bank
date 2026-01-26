@@ -1,0 +1,95 @@
+<openerp>
+  <data>
+   <template id="report_bank_debit_voucher">
+    <t t-foreach="docs" t-as="o">
+      <div class="page">
+
+        <h2 style="text-align:center; margin:0;">Lions Eye Institute &amp; Hospital</h2>
+        <h3 style="text-align:center; margin:0;">Bank Debit Voucher</h3>
+        <br/>
+
+        <!-- Get latest payment from invoice.payment_ids -->
+        <t t-set="latest_pay" t-value="False"/>
+        <t t-if="o.payment_ids">
+          <!-- Sort by date then id; take last (latest) -->
+          <!-- <t t-set="pays" t-value="sorted(o.payment_ids, key=lambda p: (p.date or '', p.id))"/> -->
+          <t t-set="latest_pay" t-value="o.payment_ids"/>
+        </t>
+
+        <!-- Move from latest payment -->
+        <t t-set="mv" t-value="latest_pay and latest_pay.move_id or False"/>
+
+        <t t-if="not mv">
+          <p><strong>No posted payment / journal entry found for this invoice.</strong></p>
+        </t>
+
+        <t t-if="mv">
+
+          <!-- Header info -->
+          <table style="width:100%; border-collapse:collapse;">
+            <tr>
+              <td style="width:50%;">
+                <strong>Journal Number:</strong> <span t-esc="mv.name"/>
+              </td>
+              <td style="width:50%; text-align:right;">
+                <strong>Date:</strong> <span t-esc="mv.date"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Period:</strong>
+                <span t-esc="mv.period_id and mv.period_id.name or ''"/>
+              </td>
+              <td style="text-align:right;">
+                <strong>Reference:</strong> <span t-esc="mv.ref or ''"/>
+              </td>
+            </tr>
+          </table>
+
+          <br/>
+
+          <!-- Journal Items (account.move.line) -->
+          <table style="width:100%; border:1px solid #000; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="border:1px solid #000; padding:4px;">Particular</th>
+                <th style="border:1px solid #000; padding:4px; text-align:right;">Debit</th>
+                <th style="border:1px solid #000; padding:4px; text-align:right;">Credit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="mv.line_id" t-as="l">
+                <tr>
+                  <td style="border:1px solid #000; padding:4px;">
+                    <span t-esc="l.name or ''"/> - <span t-esc="l.account_id and l.account_id.name or ''"/>
+                  </td>
+                  <td style="border:1px solid #000; padding:4px; text-align:right;">
+                    <span t-esc="('%.2f' % (l.debit or 0.0))"/>
+                  </td>
+                  <td style="border:1px solid #000; padding:4px; text-align:right;">
+                    <span t-esc="('%.2f' % (l.credit or 0.0))"/>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+        </t>
+
+        <br/>
+
+        <table style="width:100%;">
+          <tr>
+            <td style="width:33%; text-align:center;">Prepared By</td>
+            <td style="width:33%; text-align:center;">Checked By</td>
+            <td style="width:33%; text-align:center;">Approved By</td>
+          </tr>
+          <tr><td colspan="3" style="height:40px;"></td></tr>
+        </table>
+
+      </div>
+    </t>
+</template>
+
+  </data>
+</openerp>

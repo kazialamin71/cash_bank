@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+   <report
+  id="cash_bank_book_report_pdf"
+  model="cash.bank.book.wizard"
+  string="Cash Flow &amp; Bank Book"
+  report_type="qweb-pdf"
+  name="cash_bank.cash_bank_book_qweb"
+  file="cash_bank.cash_bank_book_qweb"
+/>
+
+
+    <!-- Template -->
+    <template id="cash_bank_book_qweb">
+      <t t-call="report.html_container">
+          <div class="page">
+            <h2>Cash Flow &amp; Bank Book</h2>
+
+            <p>
+              <strong>Company:</strong> <span t-esc="data.get('company', {}).get('name')"/><br/>
+              <strong>Period:</strong> <span t-esc="data.get('date_from')"/> to <span t-esc="data.get('date_to')"/><br/>
+              <strong>Entries:</strong> <span t-esc="'Posted only' if data.get('target_move')=='posted' else 'All'"/>
+            </p>
+
+            <hr/>
+            <h3>1) Cash Flow (Office Cash)</h3>
+
+            <t t-set="cash" t-value="data.get('cash_portion')"/>
+
+            <p>
+              <strong>Account:</strong>
+              <span t-esc="cash.get('account', {}).get('code')"/> -
+              <span t-esc="cash.get('account', {}).get('name')"/>
+            </p>
+
+            <table class="table table-condensed">
+              <tbody>
+                <tr>
+                  <td><strong>Opening Balance</strong></td>
+                  <td class="text-right"><span t-esc="cash.get('opening')"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Total Debit (No Breakdown)</strong></td>
+                  <td class="text-right"><span t-esc="cash.get('total_debit')"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h4>Credit Entries (Detailed)</h4>
+            <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Journal</th>
+                  <th>Move Number</th>
+                  <th>Reference</th>
+                  <th>Partner</th>
+                  <th class="text-right">Credit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="cash.get('credit_lines', [])" t-as="l">
+                  <tr>
+                    <td><span t-esc="l.date"/></td>
+                    <td><span t-esc="l.journal_id.name"/></td>
+                    <td><span t-esc="l.move_id.name"/></td>
+                    <td><span t-esc="l.ref or l.move_id.ref or l.name or ''"/></td>
+                    <td><span t-esc="l.partner_id.name or ''"/></td>
+                    <td class="text-right"><span t-esc="l.credit"/></td>
+                  </tr>
+                </t>
+                <tr>
+                  <td colspan="5"><strong>Total Credit</strong></td>
+                  <td class="text-right"><strong t-esc="cash.get('total_credit')"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table table-condensed">
+              <tbody>
+                <tr>
+                  <td><strong>Closing Balance</strong></td>
+                  <td class="text-right"><strong t-esc="cash.get('closing')"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr/>
+            <h3>2) Bank Book (All Bank Accounts)</h3>
+
+            <t t-foreach="data.get('bank_sections', [])" t-as="b">
+              <h4>
+                <span t-esc="b.get('account', {}).get('code')"/> -
+                <span t-esc="b.get('account', {}).get('name')"/>
+              </h4>
+
+              <table class="table table-condensed">
+                <tbody>
+                  <tr>
+                    <td><strong>Opening Balance</strong></td>
+                    <td class="text-right"><span t-esc="b.get('opening')"/></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <t t-if="b.get('has_txn')">
+                <table class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Journal</th>
+                      <th>Move Number</th>
+                      <th>Reference</th>
+                      <th>Partner</th>
+                      <th class="text-right">Debit</th>
+                      <th class="text-right">Credit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <t t-foreach="b.get('lines', [])" t-as="l">
+                      <tr>
+                        <td><span t-esc="l.date"/></td>
+                        <td><span t-esc="l.journal_id.name"/></td>
+                        <td><span t-esc="l.move_id.name"/></td>
+                        <td><span t-esc="l.ref or l.move_id.ref or l.name or ''"/></td>
+                        <td><span t-esc="l.partner_id.name or ''"/></td>
+                        <td class="text-right"><span t-esc="l.debit"/></td>
+                        <td class="text-right"><span t-esc="l.credit"/></td>
+                      </tr>
+                    </t>
+                    <tr>
+                      <td colspan="5"><strong>Totals</strong></td>
+                      <td class="text-right"><strong t-esc="b.get('debit')"/></td>
+                      <td class="text-right"><strong t-esc="b.get('credit')"/></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </t>
+
+              <table class="table table-condensed">
+                <tbody>
+                  <tr>
+                    <td><strong>Closing Balance</strong></td>
+                    <td class="text-right"><strong t-esc="b.get('closing')"/></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr/>
+            </t>
+
+          </div>
+      </t>
+    </template>
+
+  </data>
+</openerp>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="view_cash_bank_book_wizard_form" model="ir.ui.view">
+      <field name="name">cash.bank.book.wizard.form</field>
+      <field name="model">cash.bank.book.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Cash Flow &amp; Bank Book">
+          <group>
+            <field name="company_id"/>
+            <field name="target_move"/>
+          </group>
+
+          <group col="4">
+            <field name="date_from"/>
+            <field name="date_to"/>
+          </group>
+
+          <label string="Office Cash account_id and bank accounts are configured in python code."/>
+
+          <footer>
+<footer>
+  <button string="Preview" type="object" name="action_preview_report" class="oe_highlight"/>
+  <button string="Print PDF" type="object" name="action_print_report"/>
+  <button string="Cancel" class="oe_link" special="cancel"/>
+</footer>
+
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_cash_bank_book_wizard" model="ir.actions.act_window">
+      <field name="name">Cash Flow &amp; Bank Book</field>
+      <field name="res_model">cash.bank.book.wizard</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_cash_bank_book_root" name="Cash Flow &amp; Bank Book" parent="account.menu_finance_reports"/>
+    <menuitem id="menu_cash_bank_book" name="Cash Flow &amp; Bank Book"
+              parent="menu_cash_bank_book_root" action="action_cash_bank_book_wizard"/>
+
+  </data>
+</openerp>
