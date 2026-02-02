@@ -22,7 +22,6 @@
           <footer>
 <footer>
   <button string="Preview" type="object" name="action_preview_report" class="oe_highlight"/>
-  <button string="Print PDF" type="object" name="action_print_report"/>
   <button string="Cancel" class="oe_link" special="cancel"/>
 </footer>
 

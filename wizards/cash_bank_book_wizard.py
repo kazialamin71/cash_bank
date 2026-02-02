@@ -26,7 +26,7 @@ class CashBankBookWizard(models.TransientModel):
 
     # --- CONFIG ---
     OFFICE_CASH_ACCOUNT_ID = 6
-    BANK_ACCOUNT_IDS = [537, 558, 8024, 8842]
+    BANK_ACCOUNT_IDS = [537, 558, 8024, 8806]
 
     @api.constrains('date_from', 'date_to')
     def _check_dates(self):
