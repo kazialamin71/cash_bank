@@ -9,7 +9,6 @@
         'security/ir.model.access.csv',
         'views/cash_bank_book_view.xml',
         'report/cash_bank_book_template.xml',
-        'account_voucher_view.xml',
         'report/bank_debit_voucher.xml',
     ],
     'installable': True,
